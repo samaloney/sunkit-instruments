@@ -1,0 +1,1 @@
+Add a generic "GOES Flare Detection"  like algorithm and a specific GOES version. Additonlly add and example gallery comparing the restults on 1 sec, 1min average data to eacth other and HEK.
