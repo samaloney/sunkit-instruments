@@ -16,8 +16,8 @@ class SWPCEventsClient(GenericClient):
     See the `README <ftp://ftp.swpc.noaa.gov/pub/indices/events/README>`__
     for a full description of the data and its history.
 
-    Data is available from 1966 onwards, but machine readbale data only
-    from 1996 onwards gathered from three locations on
+    Data is available from 1966 onwards, but machine readable data is only
+    available from 1996 onwards, gathered from three locations on
     `SWPC's FTP server <ftp://ftp.swpc.noaa.gov/pub/>`__:
 
     * the most recent files, from ``pub/indices/events/``. The `README

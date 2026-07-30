@@ -273,6 +273,23 @@ def parse_swpc_event_archive(filepath):
             table = _parse_event_lines(lines, report_date)
             table.meta["filename"] = Path(member.name).name
             tables.append(table)
+
+    if not tables:
+        # Return an empty table with the expected schema.
+        empty = QTable()
+        empty["event_id"] = np.array([], dtype=int)
+        empty["multiple_reports"] = np.array([], dtype=bool)
+        empty["start_time"] = Time([], format="isot")
+        empty["max_time"] = Time([], format="isot")
+        empty["end_time"] = Time([], format="isot")
+        empty["observatory"] = np.array([], dtype=str)
+        empty["quality"] = np.array([], dtype=str)
+        empty["event_type"] = np.array([], dtype=str)
+        empty["location_or_frequency"] = np.array([], dtype=str)
+        empty["particulars"] = np.array([], dtype=str)
+        empty["region_number"] = MaskedColumn(np.array([], dtype=int), mask=[])
+        return empty
+
     combined = vstack(tables, metadata_conflicts="silent")
     combined.sort("start_time")
     # Only convert `max_time`/`end_time` to masked `Time` columns now, after
