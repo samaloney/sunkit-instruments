@@ -230,7 +230,7 @@ def test_flux_to_classletter():
 
 
 def test_flux_to_classletter_float32():
-    # regressoin test for float32 flux (e.g. from netCDF-sourced GOES data)
+    # regression test for float32 flux (e.g. from netCDF-sourced GOES data)
     # feed into the `10**decade` lookup would miss
     # `GOES_CONVERSION_DICT` keys by a tiny amount, silently returning "None"
     # instead of the class letter

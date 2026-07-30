@@ -1,6 +1,6 @@
 """
 =======================================================
-GOES flare detection comprison between 1s, 1min and HEK
+GOES flare detection comparison between 1s, 1min and HEK
 =======================================================
 
 This example shows how to use `sunkit_instruments` to detect flares in

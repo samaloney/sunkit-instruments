@@ -515,6 +515,9 @@ def find_goes_flares(goes_ts, min_class="C1", **kwargs):
     times = Time(longflux.index.values, format="datetime64")
     flux = u.Quantity(longflux.to_numpy(), "W/m**2")
 
+    if "min_flux" in kwargs:
+        raise TypeError("min_flux is derived from min_class; pass min_class instead.")
+
     flares = find_flares(times, flux, min_flux=flareclass_to_flux(min_class), **kwargs)
     flares["goes_class"] = [flux_to_flareclass(peak_flux) for peak_flux in flares["peak_flux"]]
     return flares["start_time", "peak_time", "end_time", "goes_class", "peak_flux"]
