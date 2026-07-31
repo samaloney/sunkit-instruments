@@ -338,16 +338,22 @@ print("Flares reported in the official GOES event list (from the HEK):", len(hek
 ###############################################################################
 # Quiet period
 # ------------
-# Now let's set up a quiet period too, during solar minimum, where the
-# largest flare is only A-class. GOES-16 was still the primary satellite in
-# May 2020, but its secondary at the time was GOES-17 rather than GOES-18.
-# Since we're now looking for much weaker events, we also lower ``min_class``
-# and ``flux_threshold`` (the quiet-Sun background floor used to detect a
-# rise at all) from the B1.0 defaults down to A1.0.
+# Now let's set up a quiet period too, during solar minimum. May 2020 was
+# otherwise extremely quiet, but NOAA AR 12765/12766, one of the first
+# flaring active regions of Solar Cycle 25, produced a short burst of
+# activity (including an M1.1, the largest flare of the month) between
+# 2020-05-27 and 2020-05-29, so we focus there. GOES-16 was still the primary
+# satellite in May 2020, but its secondary at the time was GOES-17 rather
+# than GOES-18. Since we're now looking for much weaker events than the
+# active period above, we also lower ``min_class`` and ``flux_threshold``
+# (the quiet-Sun background floor used to detect a rise at all) from the
+# B1.0 defaults down to A1.0.
 #
 # (some of the extra events will dispear if use the extended info in the 1min avg files)
 
-tr_quiet = a.Time("2020-05-01 00:00", "2020-05-31 23:59")
+tr_quiet = a.Time("2020-05-26 00:00", "2020-05-31 23:59")
+# if offline run for entire month or longer
+# tr_quiet = a.Time("2020-05-01 00:00", "2020-05-31 23:59")
 
 merged_1s_quiet, merged_1min_quiet = fetch_merged_fluxes(tr_quiet, satellites=(16, 17))
 
