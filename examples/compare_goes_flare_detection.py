@@ -1,7 +1,7 @@
 """
-=======================================================
+========================================================
 GOES flare detection comparison between 1s, 1min and HEK
-=======================================================
+========================================================
 
 This example shows how to use `sunkit_instruments` to detect flares in
 GOES-XRS data, compares the results between the high-cadence (1-second)
