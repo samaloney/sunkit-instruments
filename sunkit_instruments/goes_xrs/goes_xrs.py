@@ -127,7 +127,7 @@ def flareclass_to_flux(flareclass):
 
 
 @u.quantity_input
-def flux_to_flareclass(goesflux: u.watt / u.m**2):
+def flux_to_flareclass(goesflux: u.watt / u.m**2, decimal_places=None):
     """
     Converts X-ray flux into the corresponding GOES flare class.
 
@@ -136,6 +136,11 @@ def flux_to_flareclass(goesflux: u.watt / u.m**2):
     flux : `~astropy.units.Quantity`
         X-ray flux between 1 and 8 Angstroms (usually measured by GOES) as
         measured at the Earth in W/m^2
+    decimal_places : int, optional
+        If given, the class number is rounded to this many decimal places
+        (e.g. ``decimal_places=1`` gives ``'C2.3'`` for a flux corresponding
+        to a raw class of C2.28). By default, the class number is instead
+        formatted to 3 significant figures (e.g. ``'C2.28'``).
 
     Returns
     -------
@@ -165,14 +170,19 @@ def flux_to_flareclass(goesflux: u.watt / u.m**2):
     'A0.78'
     >>> flux_to_flareclass(0.00682 * u.watt/u.m**2)
     'X68.2'
+    >>> flux_to_flareclass(2.28e-06 * u.watt/u.m**2, decimal_places=1)
+    'C2.3'
     """
 
     if goesflux.value < 0:
         raise ValueError("Flux cannot be negative")
 
-    decade = np.floor(np.log10(goesflux.to("W/m**2").value))
-    # invert the conversion dictionary
-    conversion_dict = {v: k for k, v in GOES_CONVERSION_DICT.items()}
+    # Cast to a float32 rather comparing/hashing a float32 Quantity against
+    # the float64 reference values  can silently fail to match.
+    decade = np.floor(np.log10(goesflux.to_value("W/m**2").astype(float32)))
+    # invert the conversion dictionary, keyed by the base-10 decade rather
+    # than by Quantity (Quantity is not a reliable dict key across dtypes).
+    conversion_dict = {np.log10(v.to_value("W/m**2")): k for k, v in GOES_CONVERSION_DICT.items()}
     if decade < -8:
         str_class = "A"
         decade = -8
@@ -180,6 +190,8 @@ def flux_to_flareclass(goesflux: u.watt / u.m**2):
         str_class = "X"
         decade = -4
     else:
-        str_class = conversion_dict.get(u.Quantity(10**decade, "W/m**2"))
-    goes_subclass = 10**-decade * goesflux.to("W/m**2").value
-    return f"{str_class}{goes_subclass:.3g}"
+        str_class = conversion_dict[decade]
+    goes_subclass = 10**-decade * float(goesflux.to_value("W/m**2"))
+    if decimal_places is None:
+        return f"{str_class}{goes_subclass:.3g}"
+    return f"{str_class}{goes_subclass:.{decimal_places}f}"

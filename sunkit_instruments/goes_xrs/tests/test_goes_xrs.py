@@ -229,6 +229,22 @@ def test_flux_to_classletter():
     assert goes.flux_to_flareclass(2.1e-05 * u.watt / u.m**2) == "M2.1"
 
 
+def test_flux_to_classletter_float32():
+    # Regression test as  silently returned "None<number>" for
+    # float32 input as float32 and float64 Quantities of the same
+    # value hash differently. float32 fluxes are common in real GOES data
+    # (e.g. FITS/netCDF arrays).
+    flux = np.float32(2.28e-06) * u.watt / u.m**2
+    assert goes.flux_to_flareclass(flux) == "C2.28"
+
+
+def test_flux_to_classletter_decimal_places():
+    assert goes.flux_to_flareclass(2.28e-06 * u.watt / u.m**2, decimal_places=1) == "C2.3"
+    assert goes.flux_to_flareclass(2.28e-06 * u.watt / u.m**2, decimal_places=0) == "C2"
+    # default behaviour (3 significant figures) is unchanged
+    assert goes.flux_to_flareclass(2.28e-06 * u.watt / u.m**2) == "C2.28"
+
+
 def test_class_to_flux():
     classes = ["A3.49", "A0.23", "M1", "X2.3", "M5.8", "C2.3", "B3.45", "X20"]
     results = Quantity(
