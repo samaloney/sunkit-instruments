@@ -7,8 +7,8 @@ of the file format.
 """
 import re
 import tarfile
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import numpy as np
 
